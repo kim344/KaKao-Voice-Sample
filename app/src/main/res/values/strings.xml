@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">KakaoSample</string>
+    <string name="kakao_app_key">17c21037b5f35db7fbff23b0c52be092</string>
+
+    <string name="kakao_title">음성검색</string>
+    <string name="kakao_main_comment_start">지금 말해주세요</string>
+    <string name="kakao_main_comment_start_body">나이키 운동화\n키즈 운동화\n패딩부츠</string>
+    <string name="kakao_main_comment_stop">다시 말해주세요</string>
+    <string name="kakao_main_comment_stop_body">아래 버튼을 누른 후\n마이크를 가까이 대고 말해주세요</string>
+</resources>
