@@ -31,6 +31,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements SpeechRecognizeListener {
 
+    String TAG = "Confirm";
+
     private SpeechRecognizerClient client;
     private static final int REQUEST_CODE_AUDIO_AND_WRITE_EXTERNAL_STORAGE = 0;
 
@@ -38,10 +40,8 @@ public class MainActivity extends AppCompatActivity implements SpeechRecognizeLi
 
     ImageView imageKaKaoVoiceStart;
     ImageView imageKaKaoVoiceStop;
-    ImageView imageKaKaoBack;
     TextView txtComment;
     TextView txtResult;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements SpeechRecognizeLi
         setContentView(R.layout.activity_main);
 
         String hash = getKeyHash(MainActivity.this);
-        Log.e("Confirm", hash);
+        Log.d(TAG, "getHash : " + hash);
 
         // SDK 초기화
         SpeechRecognizerManager.getInstance().initializeLibrary(this);
@@ -60,12 +60,9 @@ public class MainActivity extends AppCompatActivity implements SpeechRecognizeLi
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO)
                     && ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                Log.e("Confirm", "두번쨰");
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_AUDIO_AND_WRITE_EXTERNAL_STORAGE);
             } else {
                 // 유저가 거부하면서 다시 묻지 않기를 클릭.. 권한이 없다고 유저에게 직접 알림.
-                Log.e("Confirm", "세번째");
-
                 String serviceType = SpeechRecognizerClient.SERVICE_TYPE_WEB;
 
                 if (PermissionUtils.checkAudioRecordPermission(MainActivity.this)) {
@@ -77,35 +74,29 @@ public class MainActivity extends AppCompatActivity implements SpeechRecognizeLi
                     client.startRecording(true);
 
                     Toast.makeText(MainActivity.this, "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
-
-//                    setButtonsStatus(false);
                 }
             }
 
         } else {
-//            startUsingSpeechSDK();
-            Log.e("Confirm", "네번째");
-
+            Log.e(TAG, "else");
         }
 
         imageKaKaoVoiceStart = findViewById(R.id.img_kakao_voice_start);
         imageKaKaoVoiceStop = findViewById(R.id.img_kakao_voice_stop);
-        imageKaKaoBack = findViewById(R.id.img_kakao_back);
         txtComment = findViewById(R.id.txt_kakao_main_comment);
         txtResult = findViewById(R.id.txt_result_speech);
 
         imageViewTarget = new GlideDrawableImageViewTarget(imageKaKaoVoiceStart);
         //GIF Start Stop 관리
-        Glide.with(this).load(R.raw.ani_voice).into(imageViewTarget).onStart();
-        //Glide.with(KaKaoTest.this).load(R.raw.ani_voice).into(imageViewTarget).onStop();
+        Glide.with(this).load(R.raw.sample_loading).into(imageViewTarget).onStart();
+        //Glide.with(KaKaoTest.this).load(R.raw.sample_loading).into(imageViewTarget).onStop();
 
         imageKaKaoVoiceStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("Confirm", "imageKaKaoVoiceStart Click");
+                Log.d(TAG, "imageKaKaoVoiceStart Click");
 
-                Glide.with(MainActivity.this).load(R.raw.ani_voice).into(imageViewTarget).onStart();
-
+                Glide.with(MainActivity.this).load(R.raw.sample_loading).into(imageViewTarget).onStart();
 
                 String serviceType = SpeechRecognizerClient.SERVICE_TYPE_WEB;
 
@@ -118,19 +109,10 @@ public class MainActivity extends AppCompatActivity implements SpeechRecognizeLi
                     client.startRecording(true);
 
                     Toast.makeText(MainActivity.this, "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
-
-//                    setButtonsStatus(false);
                 }
             }
         });
-
-
-        // 클라이언트 생성 - 마이이크 아이콘에 동작하도록 하자.
-        //SpeechRecognizerClient.Builder builder = new SpeechRecognizerClient.Builder().setServiceType(SpeechRecognizerClient.SERVICE_TYPE_WEB);
-
-//        setButtonsStatus(true);
     }
-
 
     public void onDestroy() {
         super.onDestroy();
@@ -139,32 +121,26 @@ public class MainActivity extends AppCompatActivity implements SpeechRecognizeLi
         SpeechRecognizerManager.getInstance().finalizeLibrary();
     }
 
-    //상황에 따라 버튼을 사용가능할지 불가능하게 할지 설정한다.
-    private void setButtonsStatus(boolean enabled) {
-        imageKaKaoBack.setEnabled(enabled);
-    }
-
-
-    //SpeechRecognizeListener의 여러가지 메소드들...
+    //SpeechRecognize Listener 의 여러가지 메소드들...
     @Override
     public void onReady() {//모든 하드웨어및 오디오 서비스가 모두 준비 된 다음 호출
-        Log.e("Confirm onReady : ", "모든 준비가 완료 되었습니다.");
+        Log.d(TAG, "onReady : 모든 준비가 완료 되었습니다.");
     }
 
     @Override
     public void onBeginningOfSpeech() { //사용자가 말하기 시작하는 순간 호출
-        Log.e("Confirm", "onBeginningOfSpeech : 말하기 시작 했습니다.");
+        Log.d(TAG, "onBeginningOfSpeech : 말하기 시작 했습니다.");
     }
 
     @SuppressLint("LongLogTag")
     @Override
     public void onEndOfSpeech() {//사용자가 말하기를 끝냈다고 판단되면 호출
-        Log.e("Confirm onEndOfSpeech : ", "말하기가 끝났습니다.");
+        Log.d(TAG, "onEndOfSpeech : 말하기가 끝났습니다.");
     }
 
     @Override
     public void onError(int errorCode, String errorMsg) {
-        Log.e("Confirm onError : ", "에러코드 : " + errorCode + " / 에러내용 : " + errorMsg);
+        Log.e(TAG, "onError : 에러코드 : " + errorCode + " / 에러내용 : " + errorMsg);
 
         new Thread(new Runnable() {
             @Override
@@ -182,9 +158,6 @@ public class MainActivity extends AppCompatActivity implements SpeechRecognizeLi
                         imageKaKaoVoiceStop.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-
-                                Log.e("Confirm", "imageKaKaoVoiceStop Click");
-
                                 txtComment.setText(getResources().getString(R.string.kakao_main_comment_start));
                                 txtResult.setText("");
                                 imageKaKaoVoiceStop.setVisibility(View.GONE);
@@ -201,8 +174,6 @@ public class MainActivity extends AppCompatActivity implements SpeechRecognizeLi
                                     client.startRecording(true);
 
                                     Toast.makeText(MainActivity.this, "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
-
-//                    setButtonsStatus(false);
                                 }
                             }
                         });
@@ -225,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements SpeechRecognizeLi
         final ArrayList<String> texts = results.getStringArrayList(SpeechRecognizerClient.KEY_RECOGNITION_RESULTS);
         ArrayList<Integer> confs = results.getIntegerArrayList(SpeechRecognizerClient.KEY_CONFIDENCE_VALUES);
 
-        Log.e("Confirm", "Result: " + texts);
+        Log.d(TAG, "Result: " + texts);
 
         for (int i = 0; i < texts.size(); i++) {
             builder.append(texts.get(i));
@@ -242,10 +213,7 @@ public class MainActivity extends AppCompatActivity implements SpeechRecognizeLi
                 if (activity.isFinishing()) return;
 
                 txtResult.setText(texts.get(0));
-                Log.e("Confirm 카카오", builder.toString());
-                Glide.with(MainActivity.this).load(R.raw.ani_voice).into(imageViewTarget).onStop();
-
-//                setButtonsStatus(true);
+                Glide.with(MainActivity.this).load(R.raw.sample_loading).into(imageViewTarget).onStop();
             }
         });
 
@@ -258,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements SpeechRecognizeLi
 
     @Override
     public void onFinished() {
-        Log.e("Confirm", "finish");
+        Log.d(TAG, "onFinished");
     }
 
     public String getKeyHash(final Context context) {
@@ -271,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements SpeechRecognizeLi
                 md.update(signature.toByteArray());
                 return Base64.encodeToString(md.digest(), Base64.NO_WRAP);
             } catch (NoSuchAlgorithmException e) {
-                Log.e("Confirm", "디버그 keyHash" + signature, e);
+                Log.d(TAG, "디버그 keyHash" + signature, e);
             }
         }
         return null;
