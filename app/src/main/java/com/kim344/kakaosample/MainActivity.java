@@ -88,15 +88,15 @@ public class MainActivity extends AppCompatActivity implements SpeechRecognizeLi
 
         imageViewTarget = new GlideDrawableImageViewTarget(imageKaKaoVoiceStart);
         //GIF Start Stop 관리
-        Glide.with(this).load(R.raw.sample_loading).into(imageViewTarget).onStart();
-        //Glide.with(KaKaoTest.this).load(R.raw.sample_loading).into(imageViewTarget).onStop();
+        Glide.with(this).load(R.raw.recording).into(imageViewTarget).onStart();
+        //Glide.with(KaKaoTest.this).load(R.raw.recording).into(imageViewTarget).onStop();
 
         imageKaKaoVoiceStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "imageKaKaoVoiceStart Click");
 
-                Glide.with(MainActivity.this).load(R.raw.sample_loading).into(imageViewTarget).onStart();
+                Glide.with(MainActivity.this).load(R.raw.recording).into(imageViewTarget).onStart();
 
                 String serviceType = SpeechRecognizerClient.SERVICE_TYPE_WEB;
 
@@ -213,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements SpeechRecognizeLi
                 if (activity.isFinishing()) return;
 
                 txtResult.setText(texts.get(0));
-                Glide.with(MainActivity.this).load(R.raw.sample_loading).into(imageViewTarget).onStop();
+                Glide.with(MainActivity.this).load(R.raw.recording).into(imageViewTarget).onStop();
             }
         });
 
